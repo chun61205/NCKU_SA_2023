@@ -11,39 +11,39 @@ hash_type=""
 hashes=()
 input_files=()
 
-while [[ $# -gt 1 ]]; do
+while [[ $# -gt 0 ]]; do
     case $1 in
         -h)
 	    usage
 	    exit 0
 	;;
 	--md5)
-	    if [[ ${#hash_type} -gt 1 ]]; then
+	    if [[ ${#hash_type} -gt 0 ]]; then
 		echo "Error: Only one type of hash function is allowed." >&2
 		exit 1
 	    fi
 	    hash_type="md5"
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
 		hashes+=("$1")
 		shift
 	    done
 	;;
 	--sha256)
-	    if [[ ${#hash_type} -gt 1 ]]; then
+	    if [[ ${#hash_type} -gt 0 ]]; then
 		echo "Error: Only one type of hash function is allowed." >&2
 		exit 1
 	    fi
 	    hash_type="sha2565"
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
 		hashes+=("$1")
 		shift
 	    done
 	;;
 	-i)
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
 		input_files+=("$1")
 		shift
 	    done
