@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Chech if the number of hash funciton inputs match the number of files.
-if [ ${#hashes[@]} -ne ${#input_files[@]} ]; then
+if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
     echo "Error: Invalid values." >&2
     exit 1
 fi
