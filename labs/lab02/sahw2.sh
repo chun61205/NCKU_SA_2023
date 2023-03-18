@@ -45,6 +45,7 @@ while [[ $# -gt 0 ]]; do
 	-i)
 	    shift
 	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+		echo "file: $1"
 		input_files+=("$1")
 		shift
 	    done
