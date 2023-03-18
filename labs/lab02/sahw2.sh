@@ -24,9 +24,10 @@ while [[ $# -gt 0 ]]; do
 	    fi
 	    hash_type="md5"
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
-		hashes+=("$1")
-		echo "$1"
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+		if [[ "$1" != " " ]]; then
+		    hashes+=("$1")
+		fi
 		shift
 	    done
 	;;
@@ -37,15 +38,19 @@ while [[ $# -gt 0 ]]; do
 	    fi
 	    hash_type="sha2565"
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
-		hashes+=("$1")
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+		if [[ "$1" != " " ]]; then
+			hashes+=("$1")
+		fi
 		shift
 	    done
 	;;
 	-i)
 	    shift
-	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
-		input_files+=("$1")
+	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+		if [[ "$1" != " " ]]; then
+			input_files+=("$1")
+		fi
 		shift
 	    done
 	;;
