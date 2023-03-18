@@ -24,7 +24,7 @@ while [[ $# -gt 0 ]]; do
 	    fi
 	    hash_type="md5"
 	    shift
-	    while [[ $# -gt 0  &&  ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 0  && ! "$1" =~ ^- ]]; do
 		hashes+=("$1")
 		shift
 	    done
