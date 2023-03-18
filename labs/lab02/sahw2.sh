@@ -72,7 +72,7 @@ for (( i=0; i<${#hashes[@]}; i++)); do
 	checksum=`sha256sum "$file" | awk '{print $1}'`
     fi
 
-    if [[ "$hash" != "$checksum" ]]; then
+    if [[ "$curr" != "$checksum" ]]; then
 	echo "Error: Invalid checksum." >&2
 	exit 1
     fi
