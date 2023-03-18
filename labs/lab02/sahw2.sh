@@ -2,7 +2,10 @@
 
 # usage
 usage() {
-    echo -e "\nUsage: sahw2.sh {--sha256 hashes ... | --md5 hashes ...} -f files ... \n\n--sha256: SHA256 hashes to validate input files.\n--md5: MD5 hashes to validate input files.\n-i: Input files.\n"
+    usage() {
+        echo -n -e "\nUsage: sahw2.sh {--sha256 hashes ... | --md5 hashes ...} -i files ...\n\n--sha256: SHA256 hashes to validate input files.\n--md5: MD5 hashes to validate input files.\n-i: Input files.\n"
+}
+
 }
 
 # Parse arguments
