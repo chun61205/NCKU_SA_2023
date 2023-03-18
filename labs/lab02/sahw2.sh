@@ -73,7 +73,7 @@ for (( i=0; i<${#hashes[@]}; i++)); do
     fi
 
     if [[ "$hash" != "$checksum" ]]; then
-	echo "Errpr: Invalid checksum." >&2
+	echo "Error: Invalid checksum." >&2
 	exit 1
     fi
 done
