@@ -24,7 +24,7 @@ while [[ $# -gt 0 ]]; do
 	    fi
 	    hash_type="md5"
 	    shift
-	    while [[ $# -gt 0  && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
 		hashes+=("$1")
 		echo "$1"
 		shift
@@ -37,16 +37,15 @@ while [[ $# -gt 0 ]]; do
 	    fi
 	    hash_type="sha2565"
 	    shift
-	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
 		hashes+=("$1")
 		shift
 	    done
 	;;
 	-i)
 	    shift
-	    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+	    while [[ $# -gt 1 && ! "$1" =~ ^- ]]; do
 		input_files+=("$1")
-		echo "$1"
 		shift
 	    done
 	;;
@@ -57,9 +56,6 @@ while [[ $# -gt 0 ]]; do
 	;;
     esac 
 done
-
-echo "${#hashes[@]}\n"
-echo "${#input_files[@]}\n"
 
 # Chech if the number of hash funciton inputs match the number of files.
 if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
