@@ -50,7 +50,7 @@ while [[ $# -gt 0 ]]; do
 	;;
 	*)
 	    echo "Error: Invalid arguments." >&2
-	    usage >&2
+	    usage
 	    exit 1
 	;;
     esac 
@@ -58,7 +58,7 @@ done
 
 # Chech if the number of hash funciton inputs match the number of files.
 if [ ${#hashes[@]} -ne ${#input_files[@]} ]; then
-    echo "Error: Invalid values."
+    echo "Error: Invalid values." >&2
     exit 1
 fi
 
@@ -73,7 +73,7 @@ for (( i=0; i<${#hashes[@]}; i++)); do
     fi
 
     if [[ "$hash" != "$checksum" ]]; then
-	echo "Errpr: Invalid checksum."
+	echo "Errpr: Invalid checksum." >&2
 	exit 1
     fi
 done
