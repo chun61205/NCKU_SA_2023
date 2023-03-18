@@ -58,7 +58,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "hashes: ${#hashes[@]}"
-echo "input_files: ${input_files[@]}"
+echo "input_files: ${#input_files[@]}"
 
 # Chech if the number of hash funciton inputs match the number of files.
 if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
