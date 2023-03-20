@@ -78,5 +78,28 @@ for (( i=0; i<${#hashes[@]}; i++)); do
     fi
 done
 
+usernames=()
+passwords=()
+shells=()
+groupss=()
+
+
+for i in "${input_files[@]}"; do
+    if head -n1 "${input_files}" | grep -q "username,password,shell,groups"; then
+	while read -r username password shell groups -d, ; do
+	    echo "$username"
+	    echo "$password"
+	    echo "$shell"
+	    echo "$groups"
+	    usernames=username
+	    passwords=password
+	    shells=shell
+	    groupss=groups
+	done
+    else
+	echo "Error: Invalid file format." >&2
+	exit 1
+    fi
+done
 
 exit 0
