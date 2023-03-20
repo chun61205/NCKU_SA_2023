@@ -86,7 +86,7 @@ groupss=()
 
 for i in "${input_files[@]}"; do
     if head -n1 "${input_files}" | grep -q "username,password,shell,groups"; then
-	while read -r username password shell groups -d, ; do
+	while read -r username password shell groups -d "," ; do
 	    echo "$username"
 	    echo "$password"
 	    echo "$shell"
@@ -101,5 +101,7 @@ for i in "${input_files[@]}"; do
 	exit 1
     fi
 done
+
+echo "This script will create the following user(s): Do you want to continue? [y/n]:"
 
 exit 0
