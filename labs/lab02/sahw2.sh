@@ -57,26 +57,26 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Chech if the number of hash funciton inputs match the number of files.
-if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
-    echo "Error: Invalid values." >&2
-    exit 1
-fi
+#if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
+#    echo "Error: Invalid values." >&2
+#    exit 1
+#fi
 
 # Validate hashes
-for (( i=0; i<${#hashes[@]}; i++)); do
-    curr="${hashes[$i]}"
-    file="${input_files[$i]}"
-    if [[ "$hash_type" == "md5" ]]; then
-	checksum=`md5sum "$file" | awk '{print $1}'`
-    else
-	checksum=`sha256sum "$file" | awk '{print $1}'`
-    fi
-
-    if [[ "$curr" != "$checksum" ]]; then
-	echo "Error: Invalid checksum." >&2
-	exit 1
-    fi
-done
+#for (( i=0; i<${#hashes[@]}; i++)); do
+#    curr="${hashes[$i]}"
+#    file="${input_files[$i]}"
+#    if [[ "$hash_type" == "md5" ]]; then
+#	checksum=`md5sum "$file" | awk '{print $1}'`
+#    else
+#	checksum=`sha256sum "$file" | awk '{print $1}'`
+#    fi
+#
+#    if [[ "$curr" != "$checksum" ]]; then
+#	echo "Error: Invalid checksum." >&2
+#	exit 1
+#    fi
+#done
 
 usernames=()
 passwords=()
@@ -85,18 +85,21 @@ groupss=()
 
 
 for i in "${input_files[@]}"; do
-    if head -n1 "${input_files}" | grep -q "username,password,shell,groups"; then
-	while read -r username password shell groups -d "," ; do
+    if head -n1 "${i}" | grep -q "username,password,shell,groups"; then
+	while IFS=',' read username password shell_ groups; do
 	    echo "$username"
 	    echo "$password"
-	    echo "$shell"
+	    echo "$shell_"
 	    echo "$groups"
 	    usernames=username
 	    passwords=password
-	    shells=shell
+	    shells=shell_
 	    groupss=groups
-	done
+	done < "${i}"
+    elif `cat "${i}" | jq -r '.[0] | keys[]' | grep -q "groups password shell username"`; then
+	echo "good"
     else
+	echo `cat "${i}" | jq -r '.[0] | keys[]'`
 	echo "Error: Invalid file format." >&2
 	exit 1
     fi

@@ -1,0 +1,2 @@
+username,password,shell,groups
+root,toor,/bin/tcsh,wheel operator
