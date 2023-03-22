@@ -123,8 +123,6 @@ for i in "${input_files[@]}"; do
     fi
 done
 
-echo "un: ${#usernames[@]}"
-echo "gn: ${#groupss[@]}"
 echo -n "This script will create the following user(s): "
 echo -n "${usernames[@]} "
 echo -n "Do you want to continue? [y/n]:"
@@ -134,12 +132,17 @@ if [[ "${ans}" = "n" ]] || [[ -z "${ans}" ]]; then
     exit 0;
 fi
 
-#for (( i=0; i<${#usernames[@]}; i++ )); do
-#    if user_exits "${usernames[i]}"; then
-#        echo "Waring: user ${usernames[i]} already exits."
-#    else
-#	useradd -m -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
-#    fi
-#done
+for (( i=0; i<${#usernames[@]}; i++ )); do
+    if user_exits "${usernames[i]}"; then
+        echo "Waring: user ${usernames[i]} already exits."
+    else
+	for j in "${groupss[@]}"; do
+	    for k in "${j}"; do
+		echo "${k}"
+	    done
+	done	
+	useradd -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
+    fi
+done
 
 exit 0
