@@ -140,15 +140,14 @@ for (( i=0; i<${#usernames[@]}; i++ )); do
 	adduser -s "${shells[i]}" -p "${passwords[i]}" "${usernames}[i]"
     fi
 done    
-	
-#	for j in "${groupss[@]}"; do
-#	    for k in "${j}"; do
-#		if [[ $(getent group "${k} >/dev/null") ]]; then
-#		    addgroup "${k}"
-#		fi
-#	    done
-#	done
-#    fi
-#done
+
+for (( i=0; i<${#groupss[@]}; i++ )); do
+    for k in "${groupss[i]}"; do
+	if [[ (getent group "${k}" >/dev/null) ]]; then
+	    addgroup "${k}"
+	fi
+	usermod -G "${k}"
+    done
+done
 
 exit 0
