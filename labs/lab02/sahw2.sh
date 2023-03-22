@@ -85,26 +85,35 @@ groupss=()
 
 
 for i in "${input_files[@]}"; do
-    if head -n1 "${i}" | grep -q "username,password,shell,groups"; then
+    type=`file "${i}" | cut -d ' ' -f 2`
+    if [[ "${type}" = "ASCII" ]]; then
 	while IFS=',' read username password shell_ groups; do
-	    echo "$username"
-	    echo "$password"
-	    echo "$shell_"
-	    echo "$groups"
-	    usernames=username
-	    passwords=password
-	    shells=shell_
-	    groupss=groups
+	    if [[ "${username}" = "username" ]]; then
+		continue
+	    fi
+	    usernames+="${username}"
+	    passwords+="${password}"
+	    shells+="${shell_}"
+	    groupss+="${groups}"
 	done < "${i}"
-    elif `cat "${i}" | jq -r '.[0] | keys[]' | grep -q "groups password shell username"`; then
-	echo "good"
+    elif [[ "${type}" = "JSON" ]]; then
+	usernames+=($(cat "${i}" | jq -r '.[] | .username'))
+	passwords+=($(cat "${i}" | jq -r '.[] | .password'))
+	shells+=($(cat "${i}" | jq -r '.[] | .shell'))
+	groupss+=($(cat "${i}" | jq -r '.[] | .groups'))
     else
-	echo `cat "${i}" | jq -r '.[0] | keys[]'`
 	echo "Error: Invalid file format." >&2
 	exit 1
     fi
 done
 
-echo "This script will create the following user(s): Do you want to continue? [y/n]:"
+echo -n "This script will create the following user(s): "
+echo -n "${usernames[@]} "
+echo -n "Do you want to continue? [y/n]:"
 
+read ans
+if [[ "${ans}" = "n" ]] || [[ -z "${ans}" ]]; then
+    exit 0;
+fi
+echo "good"
 exit 0
