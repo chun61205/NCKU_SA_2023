@@ -134,18 +134,21 @@ fi
 
 # Create users.
 for (( i=0; i<${#usernames[@]}; i++ )); do
-    if user_exits "${usernames[i]}"; then
+    if id "${usernames[i]}" &>/dev/null; then
         echo "Waring: user ${usernames[i]} already exits."
     else
-	for j in "${groupss[@]}"; do
-	    for k in "${j}"; do
-		if [[ $(getent group "${k} >/dev/null") ]]; then
-		    addgroup "${k}"
-		fi
-	    done
-	done	
-	adduser -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
+	adduser -s "${shells[i]}" -p "${passwords[i]}" "${usernames}[i]"
     fi
-done
+done    
+	
+#	for j in "${groupss[@]}"; do
+#	    for k in "${j}"; do
+#		if [[ $(getent group "${k} >/dev/null") ]]; then
+#		    addgroup "${k}"
+#		fi
+#	    done
+#	done
+#    fi
+#done
 
 exit 0
