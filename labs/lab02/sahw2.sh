@@ -6,7 +6,6 @@ usage() {
 }
 
 # Parse arguments
-
 hash_type=""
 hashes=()
 input_files=()
@@ -56,34 +55,34 @@ while [[ $# -gt 0 ]]; do
     esac 
 done
 
-# Chech if the number of hash funciton inputs match the number of files.
-#if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
-#    echo "Error: Invalid values." >&2
-#    exit 1
-#fi
+# Check if the number of hash funciton inputs match the number of files.
+if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
+    echo "Error: Invalid values." >&2
+    exit 1
+fi
 
 # Validate hashes
-#for (( i=0; i<${#hashes[@]}; i++)); do
-#    curr="${hashes[$i]}"
-#    file="${input_files[$i]}"
-#    if [[ "$hash_type" == "md5" ]]; then
-#	checksum=`md5sum "$file" | awk '{print $1}'`
-#    else
-#	checksum=`sha256sum "$file" | awk '{print $1}'`
-#    fi
-#
-#    if [[ "$curr" != "$checksum" ]]; then
-#	echo "Error: Invalid checksum." >&2
-#	exit 1
-#    fi
-#done
+for (( i=0; i<${#hashes[@]}; i++)); do
+    curr="${hashes[$i]}"
+    file="${input_files[$i]}"
+    if [[ "$hash_type" == "md5" ]]; then
+	checksum=`md5sum "$file" | awk '{print $1}'`
+    else
+	checksum=`sha256sum "$file" | awk '{print $1}'`
+    fi
+
+    if [[ "$curr" != "$checksum" ]]; then
+	echo "Error: Invalid checksum." >&2
+	exit 1
+    fi
+done
 
 usernames=()
 passwords=()
 shells=()
 groupss=()
 
-
+# Check if the file is CSV or JSON, if it is, parse the values and store in arraies.
 for i in "${input_files[@]}"; do
     type=`file "${i}" | cut -d ' ' -f 2`
     if [[ "${type}" = "CSV" ]]; then
@@ -123,6 +122,7 @@ for i in "${input_files[@]}"; do
     fi
 done
 
+# Read, if the input is "n" or Enter, then exit.
 echo -n "This script will create the following user(s): "
 echo -n "${usernames[@]} "
 echo -n "Do you want to continue? [y/n]:"
@@ -132,16 +132,19 @@ if [[ "${ans}" = "n" ]] || [[ -z "${ans}" ]]; then
     exit 0;
 fi
 
+# Create users.
 for (( i=0; i<${#usernames[@]}; i++ )); do
     if user_exits "${usernames[i]}"; then
         echo "Waring: user ${usernames[i]} already exits."
     else
 	for j in "${groupss[@]}"; do
 	    for k in "${j}"; do
-		echo "${k}"
+		if [[ $(getent group "${k} >/dev/null") ]]; then
+		    addgroup "${k}"
+		fi
 	    done
 	done	
-	useradd -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
+	adduser -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
     fi
 done
 
