@@ -146,8 +146,8 @@ for (( i=0; i<${#groupss[@]}; i++ )); do
 	if [[ (getent group "${k}" >/dev/null) ]]; then
 	    addgroup "${k}"
 	fi
-	usermod -G "${k}"
     done
+    usermod -G "${groupss[i]}" "${usernames[i]}"
 done
 
 exit 0
