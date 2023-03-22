@@ -86,15 +86,15 @@ groupss=()
 
 for i in "${input_files[@]}"; do
     type=`file "${i}" | cut -d ' ' -f 2`
-    if [[ "${type}" = "ASCII" ]]; then
+    if [[ "${type}" = "CSV" ]]; then
 	while IFS=',' read username password shell_ groups; do
 	    if [[ "${username}" = "username" ]]; then
 		continue
 	    fi
-	    usernames+="${username}"
-	    passwords+="${password}"
-	    shells+="${shell_}"
-	    groupss+="${groups}"
+	    usernames+=("${username}")
+	    passwords+=("${password}")
+	    shells+=("${shell_}")
+	    groupss+=("${groups}")
 	done < "${i}"
     elif [[ "${type}" = "JSON" ]]; then
 	usernames+=($(cat "${i}" | jq -r '.[] | .username'))
@@ -115,5 +115,16 @@ read ans
 if [[ "${ans}" = "n" ]] || [[ -z "${ans}" ]]; then
     exit 0;
 fi
-echo "good"
+
+echo "un: ${#usernames[@]}"
+echo "gn: ${#groupss[@]}"
+
+for (( i=0; i<${#{usernames[@]}}; i++ )); do
+    if user_exits "${usernames[i]}"; then
+        echo "Waring: user ${usernames[i]} already exits."
+    else
+	useradd -m -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}""
+    fi
+done
+
 exit 0
