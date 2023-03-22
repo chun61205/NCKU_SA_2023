@@ -100,13 +100,31 @@ for i in "${input_files[@]}"; do
 	usernames+=($(cat "${i}" | jq -r '.[] | .username'))
 	passwords+=($(cat "${i}" | jq -r '.[] | .password'))
 	shells+=($(cat "${i}" | jq -r '.[] | .shell'))
-	groupss+=($(cat "${i}" | jq -r '.[] | .groups'))
+	tmp=($(cat "${i}" | jq -r '.[] | .groups' | sed 's/\[\]/[ @ ]/g' ))
+	bracket=0
+	count=${#groupss[@]}
+	for j in "${tmp[@]}"; do
+	    if [[ "${j}" = '[' ]]; then
+	        bracket=1
+		groupss[count]=""
+	    elif [[ "${j}" = ']' ]]; then
+		bracket=0
+		count=$((count+1))
+	    else
+	    	if [[ "${j:0:1}" = "\"" ]]; then
+		    groupss[count]+=$(echo "${j}" | cut -d '"' -f2)
+		    groupss[count]+=" "
+		fi
+	    fi		
+	done
     else
 	echo "Error: Invalid file format." >&2
 	exit 1
     fi
 done
 
+echo "un: ${#usernames[@]}"
+echo "gn: ${#groupss[@]}"
 echo -n "This script will create the following user(s): "
 echo -n "${usernames[@]} "
 echo -n "Do you want to continue? [y/n]:"
@@ -116,15 +134,12 @@ if [[ "${ans}" = "n" ]] || [[ -z "${ans}" ]]; then
     exit 0;
 fi
 
-echo "un: ${#usernames[@]}"
-echo "gn: ${#groupss[@]}"
-
-for (( i=0; i<${#{usernames[@]}}; i++ )); do
-    if user_exits "${usernames[i]}"; then
-        echo "Waring: user ${usernames[i]} already exits."
-    else
-	useradd -m -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}""
-    fi
-done
+#for (( i=0; i<${#usernames[@]}; i++ )); do
+#    if user_exits "${usernames[i]}"; then
+#        echo "Waring: user ${usernames[i]} already exits."
+#    else
+#	useradd -m -s "${shells[i]}" -p "${passwords[i]}" "${usernames[i]}"
+#    fi
+#done
 
 exit 0
