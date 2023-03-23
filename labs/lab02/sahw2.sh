@@ -135,15 +135,15 @@ fi
 # Create users.
 for (( i=0; i<${#usernames[@]}; i++ )); do
     if id "${usernames[i]}" &>/dev/null; then
-        echo "Warning: user ${usernames[i]} already exits."
+        echo "Warning: user ${usernames[i]} already exists."
     else
 	for j in "${groupss[i]}"; do
-	    if [[ getent group "${j}" >/dev/null ]]; then
+	if getent group "${j}" >/dev/null; then
 	        echo "${j} good"
 	    fi
 	done
-	pw user add -s "${shells[i]}" "${usernames[i]}"
-	passwd "${username{i}}" "${password[i]}"
+	pw user add -s "${shells[i]}" -n "${usernames[i]}"
+	echo "${passwords[i]}" |  pw user mod "${usernames[i]}" -h 0
     fi
 done    
 
