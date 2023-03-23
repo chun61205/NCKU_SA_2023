@@ -139,12 +139,14 @@ for (( i=0; i<${#usernames[@]}; i++ )); do
     else
 	#pw user add -s "${shells[i]}" -n "${usernames[i]}"
 	#echo "${passwords[i]}" |  pw user mod "${usernames[i]}" -h 0
-	if [[ ! -z ${groupss[i]} ]]; then
-	    for j in ${groupss[i]}; do
-	        if ! getent group ${j} >/dev/null; then
-		    pw group add ${j}
+	groupss_tmp="${groupss[i]}"
+	echo "cur: ${groupss_tmp}"
+	if [[ ! -z "${groupss_tmp}" ]]; then
+	    for j in $groupss_tmp; do
+	        if getent group ${group_tmp} >/dev/null; then
+		    pw group add ${group_tmp}
+		    pw user mod ${usernames[i]} -G ${group_tmp}
 		fi
-		pw user mod ${usernames[i]} -G ${j}
 	    done
 	fi
     fi
