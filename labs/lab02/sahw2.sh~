@@ -137,19 +137,23 @@ for (( i=0; i<${#usernames[@]}; i++ )); do
     if id "${usernames[i]}" &>/dev/null; then
         echo "Warning: user ${usernames[i]} already exists."
     else
-	#pw user add -s "${shells[i]}" -n "${usernames[i]}"
-	#echo "${passwords[i]}" |  pw user mod "${usernames[i]}" -h 0
-	groupss_tmp="${groupss[i]}"
-	echo "cur: ${groupss_tmp}"
-	if [[ ! -z "${groupss_tmp}" ]]; then
-	    for j in $groupss_tmp; do
-	        if getent group ${group_tmp} >/dev/null; then
-		    pw group add ${group_tmp}
-		    pw user mod ${usernames[i]} -G ${group_tmp}
-		fi
-	    done
-	fi
+	for j in "${groupss[i]}"; do
+	if getent group "${j}" >/dev/null; then
+	        echo "${j} good"
+	    fi
+	done
+	pw user add -s "${shells[i]}" -n "${usernames[i]}"
+	echo "${passwords[i]}" |  pw user mod "${usernames[i]}" -h 0
     fi
 done    
+
+#for (( i=0; i<${#groupss[@]}; i++ )); do
+#    for k in "${groupss[i]}"; do
+#	if [[ (getent group "${k}" >/dev/null) ]]; then
+#	    addgroup "${k}"
+#	fi
+#    done
+#    usermod -G "${groupss[i]}" "${usernames[i]}"
+#done
 
 exit 0

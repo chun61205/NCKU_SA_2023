@@ -1,3 +1,3 @@
 username,password,shell,groups
-root,toor,/bin/tcsh,wheel operator
-root,toor,/bin/tcsh,
+test1,toor,/bin/tcsh,wheel operator
+test2,toor,/bin/tcsh,
