@@ -56,26 +56,26 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Check if the number of hash funciton inputs match the number of files.
-if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
-    echo "Error: Invalid values." >&2
-    exit 1
-fi
+#if [[ ${#hashes[@]} -ne ${#input_files[@]} ]]; then
+#    echo "Error: Invalid values." >&2
+#    exit 1
+#fi
 
 # Validate hashes
-for (( i=0; i<${#hashes[@]}; i++)); do
-    curr="${hashes[$i]}"
-    file="${input_files[$i]}"
-    if [[ "$hash_type" == "md5" ]]; then
-	checksum=`md5sum "$file" | awk '{print $1}'`
-    else
-	checksum=`sha256sum "$file" | awk '{print $1}'`
-    fi
+#for (( i=0; i<${#hashes[@]}; i++)); do
+#    curr="${hashes[$i]}"
+#    file="${input_files[$i]}"
+#    if [[ "$hash_type" == "md5" ]]; then
+#	checksum=`md5sum "$file" | awk '{print $1}'`
+#    else
+#	checksum=`sha256sum "$file" | awk '{print $1}'`
+#    fi
 
-    if [[ "$curr" != "$checksum" ]]; then
-	echo "Error: Invalid checksum." >&2
-	exit 1
-    fi
-done
+#    if [[ "$curr" != "$checksum" ]]; then
+#	echo "Error: Invalid checksum." >&2
+#	exit 1
+#    fi
+#done
 
 usernames=()
 passwords=()
@@ -135,19 +135,25 @@ fi
 # Create users.
 for (( i=0; i<${#usernames[@]}; i++ )); do
     if id "${usernames[i]}" &>/dev/null; then
-        echo "Waring: user ${usernames[i]} already exits."
+        echo "Warning: user ${usernames[i]} already exits."
     else
-	adduser -s "${shells[i]}" -p "${passwords[i]}" "${usernames}[i]"
+	for j in "${groupss[i]}"; do
+	    if [[ getent group "${j}" >/dev/null ]]; then
+	        echo "${j} good"
+	    fi
+	done
+	pw user add -s "${shells[i]}" "${usernames[i]}"
+	passwd "${username{i}}" "${password[i]}"
     fi
 done    
 
-for (( i=0; i<${#groupss[@]}; i++ )); do
-    for k in "${groupss[i]}"; do
-	if [[ (getent group "${k}" >/dev/null) ]]; then
-	    addgroup "${k}"
-	fi
-    done
-    usermod -G "${groupss[i]}" "${usernames[i]}"
-done
+#for (( i=0; i<${#groupss[@]}; i++ )); do
+#    for k in "${groupss[i]}"; do
+#	if [[ (getent group "${k}" >/dev/null) ]]; then
+#	    addgroup "${k}"
+#	fi
+#    done
+#    usermod -G "${groupss[i]}" "${usernames[i]}"
+#done
 
 exit 0
