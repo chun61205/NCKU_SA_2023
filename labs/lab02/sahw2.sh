@@ -148,7 +148,6 @@ for (( i=0; i<${#usernames[@]}; i++ )); do
 		fi
 		group_list+="${j},"
 	    done
-	    echo $group_list
 	    pw user mod ${usernames[i]} -G $group_list
 	fi
     fi
