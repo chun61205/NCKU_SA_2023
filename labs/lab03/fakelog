@@ -1,0 +1,8 @@
+/var/log/fakelog.log {
+    rotate 10
+    size 1k
+    postrotate
+	cp /var/log/fakelog.log.* /var/log/fakelog/
+	rm -f /var/log/fakelog/fakelog.log.11
+    endscript
+}

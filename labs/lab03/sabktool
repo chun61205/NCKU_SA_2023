@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+import os
+import sys
+
+def help_message():
+    print("Usage:")
+    print("\tcreate <snapshot-name>")
+    print("\tremove <snapshot-name> | all")
+    print("\tlist")
+    print("\troll <snapshot-name>")
+    print("\tlogrotate")
+
+def create(name):
+    os.system(f"zfs snapshot sa_pool/data@{name}")
+
+def remove(name):
+    if name == "all":
+        os.system("zfs destroy -r sa_pool/data@%")
+    else:
+        os.system(f"zfs destroy sa_pool/data@{name}")
+
+def list():
+    os.system("zfs list -t snapshot | awk '{print $1}'")
+
+def rollback(name):
+    os.system(f"zfs rollback -r sa_pool/data@{name}")
+
+def logrotate():
+    os.system("logrotate /etc/logrotate.d/log")
+
+if __name__ == "__main__":
+    command = sys.argv[1]
+
+    if command == "help":
+        help_message()
+    elif command == "create":
+        create(sys.argv[2])
+    elif command == "remove":
+        remove(sys.argv[2])
+    elif command == "list":
+        list()
+    elif command == "roll":
+        rollback(sys.argv[2])
+    elif command == "logrotate":
+        logrotate()
+        
+
+
