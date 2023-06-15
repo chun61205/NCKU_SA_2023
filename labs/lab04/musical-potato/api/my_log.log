@@ -1,0 +1,15 @@
+INFO:     Will watch for changes in these directories: ['/usr/home/roger61205/NCKU_SA_2023/labs/lab04/musical-potato/api']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [20069] using WatchFiles
+2023-06-05 09:56:49.296 | WARNING  | storage:__create_block:25 - Creating folder: /tmp/block-0
+2023-06-05 09:56:49.298 | WARNING  | storage:__create_block:25 - Creating folder: /tmp/block-1
+2023-06-05 09:56:49.299 | WARNING  | storage:__create_block:25 - Creating folder: /tmp/block-2
+2023-06-05 09:56:49.299 | WARNING  | storage:__create_block:25 - Creating folder: /tmp/block-3
+INFO:     Started server process [20080]
+INFO:     Waiting for application startup.
+2023-06-05 09:56:49.316 | INFO     | app:startup_event:24 - Processing startup initialization
+INFO:     Application startup complete.
+2023-06-05 09:56:53.931 | INFO     | app:log_response:43 - 404 b'{"detail":"Not Found"}'
+INFO:     127.0.0.1:32909 - "GET / HTTP/1.0" 404 Not Found
+2023-06-05 09:56:56.177 | INFO     | app:log_response:43 - 404 b'{"detail":"Not Found"}'
+INFO:     127.0.0.1:60855 - "GET / HTTP/1.0" 404 Not Found

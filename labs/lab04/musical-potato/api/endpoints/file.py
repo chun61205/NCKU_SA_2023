@@ -1,4 +1,5 @@
 import schemas
+from urllib.parse import quote
 from fastapi import APIRouter, Response, UploadFile, status
 from storage import storage
 
@@ -11,18 +12,16 @@ router = APIRouter()
     response_model=schemas.File,
     name="file:create_file",
 )
-async def create_file(file: UploadFile) -> schemas.File:
+async def create_file(file: UploadFile) -> schemas.File: 
     return await storage.create_file(file)
-
 
 @router.get("/", status_code=status.HTTP_200_OK, name="file:retrieve_file")
 async def retrieve_file(filename: str) -> Response:
-    # TODO: Add headers to ensure the filename is displayed correctly
-    #       You should also ensure that enables the judge to download files directly
+    encoded_filename = quote(filename, encoding="utf-8")
     return Response(
         await storage.retrieve_file(filename),
         media_type="application/octet-stream",
-        headers={},
+        headers={"Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"},
     )
 
 

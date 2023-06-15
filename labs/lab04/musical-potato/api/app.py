@@ -17,7 +17,6 @@ ROUTER.include_router(health.router, prefix="/health", tags=["health"])
 ROUTER.include_router(file.router, prefix="/file", tags=["file"])
 ROUTER.include_router(fix.router, prefix="/fix", tags=["fix"])
 
-
 # Startup event
 @APP.on_event("startup")
 async def startup_event():
@@ -48,7 +47,6 @@ async def log_response(request: Request, call_next):
         headers=dict(response.headers),
         media_type=response.media_type,
     )
-
 
 APP.include_router(
     ROUTER, prefix=settings.APP_PREFIX, dependencies=[Depends(log_request)]

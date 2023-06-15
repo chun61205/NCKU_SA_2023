@@ -1,0 +1,69 @@
+#!/usr/local/bin/bash
+#
+# PROVIDE: hw4
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf to enable hw4:
+#
+#hw4_enable="YES"
+#
+
+. /etc/rc.subr
+
+name="hw4"
+rcvar="${name}_enable"
+script="/home/roger61205/NCKU_SA_2023/labs/lab04/musical-potato/api/start_api.sh"
+
+load_rc_config $name
+
+: ${hw4_enable:="NO"}
+: ${hw4_user:="root"}
+: ${hw4_command:="/path/to/your/service"}
+
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+command_args="-P ${pidfile} -r -f ${hw4_command}"
+
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+restart_cmd="${name}_restart"
+
+hw4_start() {
+    hw4_stop
+    for i in $(seq 1 $NUM_DISKS); do
+	block_id=$(($i-1))
+	mount_point="/var/raid/block-$block_id"
+
+	zfs mount hw4_pool/block-$block_id
+    done
+
+    . /root/.cache/pypoetry/virtualenvs/system-admin-homework-template-xhqhTU0N-py3.9/bin/activate
+    cd /home/roger61205/NCKU_SA_2023/labs/lab04/musical-potato/api
+    env NUM_DISKS=$NUM_DISKS MAX_SIZE=$MAX_SIZE daemon /usr/local/bin/poetry run uvicorn app:APP --reload --host 0.0.0.0 &> /var/log/hw4.log &> /var/log/hw4.log &
+    service nginx start 2>/dev/null
+}
+
+hw4_stop() {
+    kill -9 `ps aux | grep poetry | grep -v grep | awk '{print $2}'` 2>/dev/null
+    PIDs=$(ps aux | grep /root/.cache/pypoetry/virtualenvs/system-admin-homework-template-xhqhTU0N-py3.9/bin/python | grep -v grep | awk '{print $2}')
+    for PID in $PIDs; do
+    	kill -9 $PID 2>/dev/null
+    done
+
+    for i in $(seq 1 10); do
+	block_id=$(($i-1))
+	mount_point="/var/raid/block-$block_id"
+	
+	zfs unmount hw4_pool/block-$block_id 2>/dev/null
+
+	rm -rf $mount_point 2>/dev/null
+    done
+    service nginx stop 2>/dev/null
+}
+
+hw4_restart() {
+    hw4_start
+}
+
+run_rc_command "$1"
